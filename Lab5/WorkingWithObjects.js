@@ -10,9 +10,22 @@ const assignment = {
     app.get("/lab5/assignment/title", (req, res) => {
         res.json(assignment.title);
       });
+      app.get("/lab5/assignment/description", (req, res) => {
+        res.json(assignment.description);
+      });
+      app.get("/lab5/assignment/due", (req, res) => {
+        res.json(assignment.due);
+      });
+      
       app.get("/lab5/assignment/title/:newTitle", (req, res) => {
         const { newTitle } = req.params;
         assignment.title = newTitle;
+        res.json(assignment);
+      });
+
+      app.get("/lab5/assignment/description/:newDescription", (req, res) => {
+        const { newDescription } = req.params;
+        assignment.description = newDescription;
         res.json(assignment);
       });
       app.get("/lab5/assignment/score/:newScore", (req, res) => {
