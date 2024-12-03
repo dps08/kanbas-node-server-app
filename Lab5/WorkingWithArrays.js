@@ -6,15 +6,13 @@ let todos = [
 ];
 
 export default function WorkingWithArrays(app) {
-  // Create a new item
-  app.get("/lab5/todos/create", (req, res) => {
-    const newTodo = {
-      id: new Date().getTime(),
-      title: "New Task",
-      completed: false,
-    };
-    todos.push(newTodo);
-    res.json(todos);
+  // Enable JSON parsing
+  app.use((req, res, next) => {
+    if (req.headers["content-type"] === "application/json") {
+      next();
+    } else {
+      res.status(400).send("Invalid Content-Type header.");
+    }
   });
 
   // Retrieve the entire array
@@ -29,7 +27,7 @@ export default function WorkingWithArrays(app) {
     res.json(todos);
   });
 
-  // Retrieve an item by ID with error handling
+  // Retrieve an item by ID
   app.get("/lab5/todos/:id", (req, res) => {
     const { id } = req.params;
     const todo = todos.find((t) => t.id === parseInt(id));
@@ -40,7 +38,21 @@ export default function WorkingWithArrays(app) {
     res.json(todo);
   });
 
-  // Delete an item by ID
+  // Create a new item (GET for backward compatibility)
+  app.get("/lab5/todos/create", (req, res) => {
+    const newTodo = { id: new Date().getTime(), title: "New Task", completed: false };
+    todos.push(newTodo);
+    res.json(todos);
+  });
+
+  // Create a new item (POST method)
+  app.post("/lab5/todos", (req, res) => {
+    const newTodo = { ...req.body, id: new Date().getTime() };
+    todos.push(newTodo);
+    res.json(newTodo);
+  });
+
+  // Delete an item by ID (GET for backward compatibility)
   app.get("/lab5/todos/:id/delete", (req, res) => {
     const { id } = req.params;
     const todoIndex = todos.findIndex((t) => t.id === parseInt(id));
@@ -50,39 +62,43 @@ export default function WorkingWithArrays(app) {
     res.json(todos);
   });
 
-  // Update the title of an item by ID
-  app.get("/lab5/todos/:id/title/:title", (req, res) => {
-    const { id, title } = req.params;
-    const todo = todos.find((t) => t.id === parseInt(id));
-    if (!todo) {
-      res.status(404).json({ error: `Todo with ID ${id} not found.` });
+  // Delete an item by ID (DELETE method)
+  app.delete("/lab5/todos/:id", (req, res) => {
+    const { id } = req.params;
+    const todoIndex = todos.findIndex((t) => t.id === parseInt(id));
+    if (todoIndex === -1) {
+      res.status(404).json({ message: `Unable to delete Todo with ID ${id}` });
       return;
     }
-    todo.title = title;
-    res.json(todos);
+    todos.splice(todoIndex, 1);
+    res.sendStatus(200);
   });
 
-  // Update the completed status of an item by ID
-  app.get("/lab5/todos/:id/completed/:completed", (req, res) => {
-    const { id, completed } = req.params;
-    const todo = todos.find((t) => t.id === parseInt(id));
-    if (!todo) {
-      res.status(404).json({ error: `Todo with ID ${id} not found.` });
+  // Update an item by ID (PUT method)
+  app.put("/lab5/todos/:id", (req, res) => {
+    const { id } = req.params;
+    const todoIndex = todos.findIndex((t) => t.id === parseInt(id));
+    if (todoIndex === -1) {
+      res.status(404).json({ message: `Unable to update Todo with ID ${id}` });
       return;
     }
-    todo.completed = completed === "true";
-    res.json(todos);
+    todos[todoIndex] = { ...todos[todoIndex], ...req.body };
+    res.sendStatus(200);
   });
 
-  // Update the description of an item by ID
-  app.get("/lab5/todos/:id/description/:description", (req, res) => {
-    const { id, description } = req.params;
+  // Update title, description, or completed using GET (for backward compatibility)
+  app.get("/lab5/todos/:id/:field/:value", (req, res) => {
+    const { id, field, value } = req.params;
     const todo = todos.find((t) => t.id === parseInt(id));
     if (!todo) {
       res.status(404).json({ error: `Todo with ID ${id} not found.` });
       return;
     }
-    todo.description = description;
+    if (field === "completed") {
+      todo[field] = value === "true";
+    } else {
+      todo[field] = value;
+    }
     res.json(todos);
   });
 }
