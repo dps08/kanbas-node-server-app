@@ -23,17 +23,12 @@ app.get("/lab5/todos/:id", (req, res) => {
   const { id } = req.params;
   const todo = todos.find((t) => t.id === parseInt(id));
   if (!todo) {
-    res.status(404).send(`<h1>Todo with ID ${id} not found.</h1>`);
+    res.status(404).json({ error: `Todo with ID ${id} not found.` });
     return;
   }
-  res.send(`
-    <h1>Todo Found</h1>
-    <p><strong>ID:</strong> ${todo.id}</p>
-    <p><strong>Title:</strong> ${todo.title}</p>
-    <p><strong>Completed:</strong> ${todo.completed}</p>
-    <p><strong>Description:</strong> ${todo.description || "N/A"}</p>
-  `);
+  res.json(todo);
 });
+
 
 
 
