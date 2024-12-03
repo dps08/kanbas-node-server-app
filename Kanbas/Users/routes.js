@@ -26,8 +26,7 @@ export default function UserRoutes(app) {
     const userId = req.params.userId;
     const userUpdates = req.body;
     dao.updateUser(userId, userUpdates);
-    const currentUser = dao.findUserById(userId);
-    req.session["currentUser"] = currentUser;
+    currentUser = dao.findUserById(userId);
     res.json(currentUser);
   };
 
@@ -39,8 +38,8 @@ export default function UserRoutes(app) {
         { message: "Username already in use" });
       return;
     }
-    const currentUser = dao.createUser(req.body);
-    req.session["currentUser"] = currentUser;
+    currentUser = dao.createUser(req.body);
+    res.json(currentUser);
 
 };
 
@@ -56,11 +55,6 @@ const signin = (req, res) => {
   };
 
   const profile = (req, res) => {
-    const currentUser = req.session["currentUser"];
-    if (!currentUser) {
-      res.sendStatus(401);
-      return;
-    }
     res.json(currentUser);
   };
   const findCoursesForEnrolledUser = (req, res) => {
@@ -103,10 +97,11 @@ app.get("/api/users/:userId/enrolled-courses", getEnrolledCourses);
 
 
 
-  const signout = (req, res) => {
-    req.session.destroy();
-    res.sendStatus(200);
-  };
+const signout = (req, res) => {
+  currentUser = null;
+  res.sendStatus(200);
+};
+
 
 
  
