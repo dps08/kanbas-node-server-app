@@ -6,6 +6,17 @@ let todos = [
 ];
 
 export default function WorkingWithArrays(app) {
+
+  // Create a new item
+  app.get("/lab5/todos/create", (req, res) => {
+    const newTodo = {
+      id: new Date().getTime(),
+      title: "New Task",
+      completed: false,
+    };
+    todos.push(newTodo);
+    res.json(todos);
+  });
   // Retrieve the entire array
   app.get("/lab5/todos", (req, res) => {
     const { completed } = req.query;
@@ -32,16 +43,7 @@ app.get("/lab5/todos/:id", (req, res) => {
 
 
 
-  // Create a new item
-  app.get("/lab5/todos/create", (req, res) => {
-    const newTodo = {
-      id: new Date().getTime(),
-      title: "New Task",
-      completed: false,
-    };
-    todos.push(newTodo);
-    res.json(todos);
-  });
+  
 
   // Delete an item by ID
   app.get("/lab5/todos/:id/delete", (req, res) => {
