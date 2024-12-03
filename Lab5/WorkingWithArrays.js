@@ -6,7 +6,6 @@ let todos = [
 ];
 
 export default function WorkingWithArrays(app) {
-
   // Create a new item
   app.get("/lab5/todos/create", (req, res) => {
     const newTodo = {
@@ -17,6 +16,7 @@ export default function WorkingWithArrays(app) {
     todos.push(newTodo);
     res.json(todos);
   });
+
   // Retrieve the entire array
   app.get("/lab5/todos", (req, res) => {
     const { completed } = req.query;
@@ -29,21 +29,16 @@ export default function WorkingWithArrays(app) {
     res.json(todos);
   });
 
-// Retrieve an item by ID with error handling
-app.get("/lab5/todos/:id", (req, res) => {
-  const { id } = req.params;
-  const todo = todos.find((t) => t.id === parseInt(id));
-  if (!todo) {
-    res.status(404).json({ error: `Todo with ID ${id} not found.` });
-    return;
-  }
-  res.json(todo);
-});
-
-
-
-
-  
+  // Retrieve an item by ID with error handling
+  app.get("/lab5/todos/:id", (req, res) => {
+    const { id } = req.params;
+    const todo = todos.find((t) => t.id === parseInt(id));
+    if (!todo) {
+      res.status(404).json({ error: `Todo with ID ${id} not found.` });
+      return;
+    }
+    res.json(todo);
+  });
 
   // Delete an item by ID
   app.get("/lab5/todos/:id/delete", (req, res) => {
@@ -59,9 +54,11 @@ app.get("/lab5/todos/:id", (req, res) => {
   app.get("/lab5/todos/:id/title/:title", (req, res) => {
     const { id, title } = req.params;
     const todo = todos.find((t) => t.id === parseInt(id));
-    if (todo) {
-      todo.title = title;
+    if (!todo) {
+      res.status(404).json({ error: `Todo with ID ${id} not found.` });
+      return;
     }
+    todo.title = title;
     res.json(todos);
   });
 
@@ -69,9 +66,11 @@ app.get("/lab5/todos/:id", (req, res) => {
   app.get("/lab5/todos/:id/completed/:completed", (req, res) => {
     const { id, completed } = req.params;
     const todo = todos.find((t) => t.id === parseInt(id));
-    if (todo) {
-      todo.completed = completed === "true";
+    if (!todo) {
+      res.status(404).json({ error: `Todo with ID ${id} not found.` });
+      return;
     }
+    todo.completed = completed === "true";
     res.json(todos);
   });
 
@@ -79,9 +78,11 @@ app.get("/lab5/todos/:id", (req, res) => {
   app.get("/lab5/todos/:id/description/:description", (req, res) => {
     const { id, description } = req.params;
     const todo = todos.find((t) => t.id === parseInt(id));
-    if (todo) {
-      todo.description = description;
+    if (!todo) {
+      res.status(404).json({ error: `Todo with ID ${id} not found.` });
+      return;
     }
+    todo.description = description;
     res.json(todos);
   });
 }
