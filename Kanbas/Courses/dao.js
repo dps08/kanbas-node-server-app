@@ -18,23 +18,26 @@ export function createCourse(course) {
 
 export function deleteCourse(courseId) {
     const { courses, enrollments } = Database;
+    if (!courses.some((course) => course._id === courseId)) {
+        throw new Error("Course not found");
+    }
     Database.courses = courses.filter((course) => course._id !== courseId);
     Database.enrollments = enrollments.filter(
         (enrollment) => enrollment.course !== courseId
     );
 }
 
+
 export function updateCourse(courseId, courseUpdates) {
     const { courses } = Database;
     const course = courses.find((course) => course._id === courseId);
-    if (course) {
-        Object.assign(course, courseUpdates);
-        return course;
-    }else{
-        return "Unable to update"
+    if (!course) {
+        throw new Error("Course not found");
     }
-
+    Object.assign(course, courseUpdates);
+    return course;
 }
+
 
 
 
