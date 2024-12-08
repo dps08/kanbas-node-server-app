@@ -12,7 +12,7 @@ const app = express();
 app.use(
     cors({
         credentials: true,
-        origin: process.env.NETLIFY_URL || "http://localhost:3000",
+        origin: "https://luxury-lokum-4d9a8c.netlify.app" || "http://localhost:3000",
     })
 );
 const sessionOptions = {
