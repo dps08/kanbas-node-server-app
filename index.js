@@ -15,7 +15,7 @@ const app = express();
 app.use(
     cors({
         credentials: true,
-        origin: "https://resplendent-biscochitos-8c3a7f.netlify.app/" || "http://localhost:3000",
+        origin: "https://resplendent-biscochitos-8c3a7f.netlify.app" || "http://localhost:3000",
     })
 );
 const sessionOptions = {
