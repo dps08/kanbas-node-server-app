@@ -3,12 +3,15 @@ export function enrollUserInCourse(userId, courseId) {
   const { enrollments } = Database;
   enrollments.push({ _id: Date.now(), user: userId, course: courseId });
 }
-export function findEnrollmentsByUserId(userId) {
+
+export function unEnrollUserFromCourse(userId, courseId) {
   const { enrollments } = Database;
-  return enrollments.filter((enrollment) => enrollment.user === userId);
+  Database.enrollments = enrollments.filter(
+    (enrollment) => !(enrollment.user === userId && enrollment.course === courseId)
+  );
 }
-export function addEnrollments(enrollment) {
-  const newEnrollment = { ...enrollment, _id: Date.now().toString() };
-  Database.enrollments = [...Database.enrollments, newEnrollment];
-  return newEnrollment;
+
+export function findEnrollmentsByUser(userID) {
+  const { enrollments } = Database;
+  return enrollments.filter((enrollment) => enrollment.user === userID);
 }
