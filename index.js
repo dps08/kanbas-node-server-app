@@ -9,13 +9,13 @@ import ModuleRoutes from "./Kanbas/Modules/routes.js";
 import "dotenv/config";
 import AssignmentRoutes from './Kanbas/Assignments/routes.js';
 import mongoose from "mongoose";
-const CONNECTION_STRING = "mongodb+srv://divitdps08:23082022%40Preksha@kanbas.k56ra.mongodb.net/kanbas?retryWrites=true&w=majority&appName=Kanbas" || "mongodb://127.0.0.1:27017/kanbas";
+const CONNECTION_STRING = process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kanbas";
 mongoose.connect(CONNECTION_STRING);
 const app = express();
 app.use(
     cors({
         credentials: true,
-        origin: "https://resplendent-biscochitos-8c3a7f.netlify.app" || "http://localhost:3000",
+        origin: process.env.NETLIFY_URL || "http://localhost:3000",
     })
 );
 const sessionOptions = {
